@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signup } from "@/lib/api";
+import { LoginViaGitHub, LoginViaGoogle } from "../oauth-login/page";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -66,6 +67,8 @@ export default function SignupPage() {
       <button type="submit" disabled={loading}>
         {loading ? "Signing up..." : "Sign Up"}
       </button>
+      <LoginViaGitHub />
+      <LoginViaGoogle />
     </form>
   );
 }

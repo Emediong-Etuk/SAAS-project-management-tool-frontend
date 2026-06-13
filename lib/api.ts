@@ -1,7 +1,11 @@
+"use client";
+
 import {
   PasswordTokenResponse,
   ResetPasswordResponse,
   VerifyEmailResponse,
+  CreateTenantResponse,
+  GetDashboardResponse,
 } from "./dto";
 import { LoginResponse } from "./dto";
 
@@ -16,14 +20,16 @@ function getToken(): string | null {
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
-
+  console.log("Token:",token);
   const getCookie = (name: string) =>
     document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)")?.pop();
+  const xsrfToken =
+    typeof window !== "undefined" ? getCookie("XSRF-TOKEN") : "";
   const response = await fetch(`${BASE}${path}`, {
     ...options,
     headers: {
       "Content-type": "application/json",
-      "X-XSRF-TOKEN": getCookie("XSRF-TOKEN") || "",
+      "X-XSRF-TOKEN": xsrfToken || "",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
@@ -109,10 +115,14 @@ export const getCsrf = () =>
 
 //Tenancy
 
-export const getTenantDashboard = () => request("/tenants/dashboard");
+export const getTenantDashboard = () =>
+  request<GetDashboardResponse>("/tenants/dashboard");
 
 export const createTenant = (body: { name: string; plan: "free" | "pro" }) =>
-  request("/tenants/create", { method: "POST", body: JSON.stringify(body) });
+  request<CreateTenantResponse>("/tenants/create", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
 
 export const updateTenant = (
   body: Partial<{ name: string; tenantId: string }>,

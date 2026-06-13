@@ -21,3 +21,26 @@ export type PasswordTokenResponse = {
 export type ResetPasswordResponse = {
   message: string;
 };
+
+export type CreateTenantResponse = {
+  status: string;
+  message: string;
+};
+
+export type GetDashboardResponse = {
+  data: {
+    no_of_projects: number;
+    no_of_project_members: number | null;
+    project_completion_rate: number | null;
+    project_progress: number | null;
+    project_status: string | null;
+    no_of_tasks: number;
+    no_of_completed_tasks: number;
+    no_of_pending_tasks: number;
+    tenant: {
+      name: string;
+      company_logo: string | null;
+    };
+    currentSubscriptionPlan: string;
+  };
+};
