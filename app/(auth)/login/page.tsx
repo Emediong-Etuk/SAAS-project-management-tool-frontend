@@ -14,6 +14,9 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  const rerouteToSignupPage = () => {
+    return router.push("/signup");
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -64,6 +67,10 @@ export default function LoginPage() {
           {loading ? "Logging in..." : "Login"}
         </button>
         <br />
+
+        <button type="submit" onClick={rerouteToSignupPage}>
+          Signup
+        </button>
       </form>
       <LoginViaGitHub />
       <LoginViaGoogle />

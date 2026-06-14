@@ -13,6 +13,9 @@ export default function SignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const rerouteToLoginPage = () => {
+    return router.push("/login");
+  };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
@@ -67,6 +70,11 @@ export default function SignupPage() {
       <button type="submit" disabled={loading}>
         {loading ? "Signing up..." : "Sign Up"}
       </button>
+
+      <button type="submit" onClick={rerouteToLoginPage}>
+        Login
+      </button>
+
       <LoginViaGitHub />
       <LoginViaGoogle />
     </form>

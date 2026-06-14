@@ -20,7 +20,7 @@ function getToken(): string | null {
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
-  console.log("Token:",token);
+  console.log("Token:", token);
   const getCookie = (name: string) =>
     document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)")?.pop();
   const xsrfToken =
@@ -75,7 +75,6 @@ export const login = (body: { email: string; password: string }) =>
   });
 
 export const logout = () => request("/auth/logout", { method: "POST" });
-
 export const getResetPasswordToken = (email: string) =>
   request<PasswordTokenResponse>("/auth/password/reset/get-token", {
     method: "POST",
