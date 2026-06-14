@@ -28,7 +28,8 @@ export default function VerifyEmailPage() {
         response.data.user,
       );
 
-      router.push("/dashboard");
+      document.cookie = `token=${response.data.token}; path=/; max-age=86400;`;
+      router.push("/create-tenant");
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Verification failed";
