@@ -17,6 +17,10 @@ export default function LoginPage() {
   const rerouteToSignupPage = () => {
     return router.push("/signup");
   };
+
+  const resetPasswordPage = () => {
+    return router.push("/get-reset-token");
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -70,6 +74,10 @@ export default function LoginPage() {
 
         <button type="submit" onClick={rerouteToSignupPage}>
           Signup
+        </button>
+
+        <button type="submit" onClick={resetPasswordPage}>
+          Reset Password
         </button>
       </form>
       <LoginViaGitHub />

@@ -3,16 +3,13 @@
 import { GITHUB_REDIRECT_URL } from "@/lib/api";
 import { GOOGLE_REDIRECT_URL } from "@/lib/api";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export function LoginViaGitHub() {
   const [error, setError] = useState("");
-  const router = useRouter();
 
   const handleLogin = async () => {
     try {
       window.location.href = GITHUB_REDIRECT_URL;
-      router.push("/dashboard");
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "couldn't signin with github",
@@ -29,15 +26,13 @@ export function LoginViaGitHub() {
 
 export function LoginViaGoogle() {
   const [error, setError] = useState("");
-  const router = useRouter();
 
   const handleLogin = async () => {
     try {
       window.location.href = GOOGLE_REDIRECT_URL;
-      router.push("/dashboard");
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "couldn't signin with github",
+        err instanceof Error ? err.message : "couldn't signin with google",
       );
     }
   };

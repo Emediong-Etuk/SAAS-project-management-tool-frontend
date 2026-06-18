@@ -18,10 +18,17 @@ export default function AuthCallback() {
       return;
     }
 
-    saveSession(token, tenantId ?? "", user ? JSON.parse(user) : {});
+    let parsedUser = {};
+    try {
+      parsedUser = user ? JSON.parse(user) : {};
+    } catch (error) {
+      parsedUser = { error };
+    }
+
+    saveSession(token, tenantId ?? "", parsedUser);
     document.cookie = `token=${token}; path=/; max-age=86400;`;
-    router.push("/dashboard");
-  }, []);
+    router.push("/create-tenant");
+  }, [router, searchParams]);
 
   return <p>Logging you in...</p>;
 }

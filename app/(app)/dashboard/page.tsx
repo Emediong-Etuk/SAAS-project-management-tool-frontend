@@ -4,13 +4,17 @@ import { getTenantDashboard } from "@/lib/api";
 import type { GetDashboardResponse } from "@/lib/dto";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { getSession } from "@/lib/auth";
 
 export default function Dashboard() {
+  const router = useRouter();
   const [dashboard, setDashboard] = useState<
     GetDashboardResponse["data"] | null
   >(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const session = getSession();
 
   useEffect(() => {
     getTenantDashboard()
@@ -23,6 +27,9 @@ export default function Dashboard() {
   if (error) return <p>{error}</p>;
   if (!dashboard) return <p>No dashboard data available.</p>;
 
+  const updateTenant = () => {
+    return router.push(`/${session.tenantId}/update-tenant`);
+  };
   return (
     <div>
       <h1>{dashboard.tenant.name}</h1>
@@ -42,6 +49,7 @@ export default function Dashboard() {
           width={120}
         />
       ) : null}
+      <button onClick={updateTenant}>UpdateTenant</button>
     </div>
   );
 }

@@ -25,6 +25,15 @@ export type ResetPasswordResponse = {
 export type CreateTenantResponse = {
   status: string;
   message: string;
+  data: {
+    tenant: {
+      id: string;
+      name: string;
+      plan: string;
+      created_at: string;
+      update_at: string;
+    };
+  };
 };
 
 export type GetDashboardResponse = {

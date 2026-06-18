@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createTenant } from "@/lib/api";
+import { getSession, saveSession } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 
 export default function CreateTenantPage() {
@@ -18,7 +19,12 @@ export default function CreateTenantPage() {
 
     try {
       setLoading(true);
-      await createTenant({ name, plan });
+      const response = await createTenant({ name, plan });
+      const tenantId = response.data.tenant.id;
+
+      const session = getSession();
+      saveSession(session.token || "", tenantId, session.user);
+
       setSuccess(true);
       router.push("/dashboard");
     } catch (err) {

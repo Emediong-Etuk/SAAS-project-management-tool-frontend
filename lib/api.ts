@@ -124,8 +124,13 @@ export const createTenant = (body: { name: string; plan: "free" | "pro" }) =>
   });
 
 export const updateTenant = (
-  body: Partial<{ name: string; tenantId: string }>,
-) => request("/tenants/update", { method: "POST", body: JSON.stringify(body) });
+  tenantId: string,
+  body: Partial<{ name: string }>,
+) =>
+  request(`/tenants/${tenantId}/update`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
 
 export const deleteTenant = (tenantId: string) =>
   request(`/tenants/${tenantId}/delete`, { method: "DELETE" });
