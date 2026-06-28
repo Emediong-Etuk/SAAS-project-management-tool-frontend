@@ -6,6 +6,9 @@ import {
   VerifyEmailResponse,
   CreateTenantResponse,
   GetDashboardResponse,
+  DeleteTenantResponse,
+  SendInvitationResponse,
+  RemoveMemberResponse,
 } from "./dto";
 import { LoginResponse } from "./dto";
 
@@ -39,7 +42,6 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     const error = await response.json();
     throw error;
   }
-
   return response.json();
 }
 
@@ -133,20 +135,24 @@ export const updateTenant = (
   });
 
 export const deleteTenant = (tenantId: string) =>
-  request(`/tenants/${tenantId}/delete`, { method: "DELETE" });
-
-export const sendInvite = (tenantId: string, email: string) =>
-  request(`/${tenantId}/team/members/invite`, {
-    method: "POST",
-    body: JSON.stringify({ email }),
+  request<DeleteTenantResponse>(`/tenants/${tenantId}/delete`, {
+    method: "DELETE",
   });
 
-export const removeMember = (tenantId: string, userId: string) =>
-  request(`/${tenantId}/team/members/${userId}/remove`, { method: "POST" });
+export const sendInvite = (tenantId: string, receiver_email: string) =>
+  request<SendInvitationResponse>(`/tenants/${tenantId}/invite`, {
+    method: "POST",
+    body: JSON.stringify({ receiver_email }),
+  });
+
+export const removeMember = (tenantId: string, name: string) =>
+  request<RemoveMemberResponse>(`/tenants/${tenantId}/${name}/remove`, {
+    method: "POST",
+  });
 
 export const uploadCompanyLogo = (tenantId: string, formData: FormData) => {
   const token = getToken();
-  return fetch(`${BASE}/${tenantId}/upload-logo`, {
+  return fetch(`${BASE}/tenants/${tenantId}/upload-company-logo`, {
     method: "POST",
     credentials: "include",
     headers: token ? { Authorization: `Bearer ${token}` } : {},

@@ -1,3 +1,5 @@
+import type { User } from "@/types";
+
 export type VerifyEmailResponse = {
   data: {
     token: string;
@@ -51,5 +53,19 @@ export type GetDashboardResponse = {
       company_logo: string | null;
     };
     currentSubscriptionPlan: string;
+    tenantUsers: Array<string>;
   };
+};
+
+export type DeleteTenantResponse = {
+  status: string;
+  message: string;
+};
+
+export type SendInvitationResponse = {
+  message: string;
+};
+
+export type RemoveMemberResponse = {
+  message: string;
 };

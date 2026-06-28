@@ -27,7 +27,11 @@ export default function AuthCallback() {
 
     saveSession(token, tenantId ?? "", parsedUser);
     document.cookie = `token=${token}; path=/; max-age=86400;`;
-    router.push("/create-tenant");
+
+    if (!tenantId) {
+      router.push("/create-tenant");
+    }
+    router.push("/dashboard");
   }, [router, searchParams]);
 
   return <p>Logging you in...</p>;
