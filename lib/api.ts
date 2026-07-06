@@ -9,6 +9,8 @@ import {
   DeleteTenantResponse,
   SendInvitationResponse,
   RemoveMemberResponse,
+  GetProjectsResponse,
+  CreateProjectResponse,
 } from "./dto";
 import { LoginResponse } from "./dto";
 
@@ -23,26 +25,53 @@ function getToken(): string | null {
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
-  console.log("Token:", token);
   const getCookie = (name: string) =>
     document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)")?.pop();
   const xsrfToken =
     typeof window !== "undefined" ? getCookie("XSRF-TOKEN") : "";
-  const response = await fetch(`${BASE}${path}`, {
-    ...options,
-    headers: {
-      "Content-type": "application/json",
-      "X-XSRF-TOKEN": xsrfToken || "",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    },
-  });
+
+  let response: Response;
+  try {
+    response = await fetch(`${BASE}${path}`, {
+      ...options,
+      credentials: "include",
+      headers: {
+        "Content-type": "application/json",
+        Accept: "application/json",
+        "X-XSRF-TOKEN": xsrfToken || "",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options.headers,
+      },
+    });
+  } catch (error) {
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to fetch from API",
+    );
+  }
+
+  const contentType = response.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
+  const payload = isJson
+    ? await response.json().catch(() => null)
+    : await response.text();
 
   if (!response.ok) {
-    const error = await response.json();
-    throw error;
+    if (payload && typeof payload === "object" && "message" in payload) {
+      throw new Error(String((payload as { message?: unknown }).message));
+    }
+
+    if (typeof payload === "string" && payload) {
+      throw new Error(payload);
+    }
+
+    throw new Error("Request failed");
   }
-  return response.json();
+
+  if (isJson) {
+    return payload as T;
+  }
+
+  return payload as T;
 }
 
 // Authentication
@@ -163,18 +192,17 @@ export const uploadCompanyLogo = (tenantId: string, formData: FormData) => {
 //Projects
 
 export const getProjects = (tenantId: string) =>
-  request(`/${tenantId}/projects`);
+  request<GetProjectsResponse>(`/${tenantId}/projects/`);
 
 export const createProject = (
   tenantId: string,
   body: {
     name: string;
     description: string;
-    status: string;
     deadline?: string;
   },
 ) =>
-  request(`/${tenantId}/projects/`, {
+  request(`/${tenantId}/projects/create`, {
     method: "POST",
     body: JSON.stringify(body),
   });

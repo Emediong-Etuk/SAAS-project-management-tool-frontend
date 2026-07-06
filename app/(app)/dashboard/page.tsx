@@ -18,7 +18,7 @@ export default function Dashboard() {
   >(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<Session>(() => {
+  const [session] = useState<Session>(() => {
     try {
       return getSession();
     } catch {
@@ -27,8 +27,13 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    if (!session?.token || !session.tenantId) {
+    if (!session?.token) {
       router.push("/login");
+      return;
+    }
+
+    if (!session.tenantId) {
+      router.push("/create-tenant");
       return;
     }
 
@@ -107,6 +112,11 @@ export default function Dashboard() {
 
     return <button onClick={handleSubmit}>Remove member</button>;
   }
+
+  const getProjects = async () => {
+    router.push(`/${session?.tenantId}/projects/view`);
+  };
+
   return (
     <div>
       <h1>{dashboard.tenant.name}</h1>
@@ -139,6 +149,7 @@ export default function Dashboard() {
       <p onClick={handleDelete}>Delete</p>
       <button onClick={sendInvite}>Invite member</button>
       <UploadCompanyLogo onUploadSuccess={handleLogoUpdate} />
+      <button onClick={getProjects}>View Projects</button>
     </div>
   );
 }

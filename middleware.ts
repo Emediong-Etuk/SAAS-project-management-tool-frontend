@@ -6,6 +6,18 @@ const PUBLIC_PATHS = ["/login", "/verify-email", "/signup", "/forgot-password"];
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  if (request.method === "OPTIONS") {
+    return new NextResponse(null, {
+      status: 204,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "x-xsrf-token, Content-Type",
+        "Access-Control-Max-Age": "86400",
+      },
+    });
+  }
+
   if (PUBLIC_PATHS.some((path) => pathname.startsWith(path))) {
     return NextResponse.next();
   }

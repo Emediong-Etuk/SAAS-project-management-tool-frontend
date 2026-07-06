@@ -69,3 +69,36 @@ export type SendInvitationResponse = {
 export type RemoveMemberResponse = {
   message: string;
 };
+
+export type GetProjectsResponse = {
+  message: string;
+  data: {
+    projects: Array<{
+      id: string;
+      name: string;
+      description: string;
+      status: string;
+      created_at: string;
+    }>;
+  };
+};
+
+export type CreateProjectResponse = {
+  data: {
+    project: {
+      id: string;
+      name: string;
+      description: string;
+      deadline: string;
+      status: string;
+    };
+  };
+};
+
+export type Project = {
+  id: string;
+  name: string;
+  description: string;
+  deadline: string;
+  status: string;
+};
