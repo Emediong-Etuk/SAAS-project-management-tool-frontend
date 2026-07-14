@@ -37,10 +37,20 @@ export default function GetProjects() {
       .finally(() => setLoading(false));
   }, [router, session]);
 
+  if (!session?.tenantId) {
+    return null;
+  }
+
   if (loading) return <p>Loading...</p>;
 
   const createProject = () => {
     return router.push(`/${session?.tenantId}/projects/new`);
+  };
+
+  const handleProjectClick = () => {
+    return router.push(
+      `/${session?.tenantId}/projects/${session?.projectId}/getProject`,
+    );
   };
 
   return (
@@ -53,6 +63,9 @@ export default function GetProjects() {
             {project.created_at}){project.status}
           </li>
         ))}
+        <button type="button" onClick={handleProjectClick}>
+          View Project
+        </button>
       </ul>
       <button type="button" onClick={createProject}>
         Create Project

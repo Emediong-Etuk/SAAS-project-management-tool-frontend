@@ -56,7 +56,10 @@ export default function Dashboard() {
           }
         : prev,
     );
+    // console.log("Updated logo URL:", newLogoUrl);
   };
+
+  console.log("logo url in database:", dashboard.tenant.company_logo);
 
   const updateTenant = () => {
     const tenantId = session?.tenantId;
@@ -114,7 +117,7 @@ export default function Dashboard() {
   }
 
   const getProjects = async () => {
-    router.push(`/${session?.tenantId}/projects/view`);
+    router.push(`/${session?.tenantId}/projects/getProjects`);
   };
 
   return (

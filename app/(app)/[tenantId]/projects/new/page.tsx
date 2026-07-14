@@ -1,7 +1,7 @@
 "use client";
 
 import { createProject } from "@/lib/api";
-import { getSession, type Session } from "@/lib/auth";
+import { getSession, saveSession, type Session } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -66,12 +66,27 @@ export default function CreateProject() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
+    if (!sessionState.session) {
+      return null;
+    }
+
     e.preventDefault();
     setLoading(true);
     setError(null);
     try {
-      await createProject(tenantId, { name, description, deadline });
-      router.push(`/${tenantId}/projects/view`);
+      const response = await createProject(tenantId, {
+        name,
+        description,
+        deadline,
+      });
+      const projectId = response.data.project.id;
+      router.push(`/${tenantId}/projects/getProjects`);
+      saveSession(
+        sessionState.session.token || "",
+        tenantId,
+        projectId,
+        sessionState.session.user || {},
+      );
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred",

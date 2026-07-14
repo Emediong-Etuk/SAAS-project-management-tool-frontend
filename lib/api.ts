@@ -11,6 +11,7 @@ import {
   RemoveMemberResponse,
   GetProjectsResponse,
   CreateProjectResponse,
+  GetProjectResponse,
 } from "./dto";
 import { LoginResponse } from "./dto";
 
@@ -202,13 +203,13 @@ export const createProject = (
     deadline?: string;
   },
 ) =>
-  request(`/${tenantId}/projects/create`, {
+  request<CreateProjectResponse>(`/${tenantId}/projects/create`, {
     method: "POST",
     body: JSON.stringify(body),
   });
 
 export const getProject = (tenantId: string, projectId: string) =>
-  request(`/${tenantId}/projects/${projectId}`);
+  request<GetProjectResponse>(`/${tenantId}/projects/${projectId}`);
 
 export const updateProject = (
   tenantId: string,
@@ -220,7 +221,7 @@ export const updateProject = (
     deadline: string;
   }>,
 ) =>
-  request(`/${tenantId}/projects/${projectId}`, {
+  request(`/${tenantId}/projects/${projectId}/update`, {
     method: "POST",
     body: JSON.stringify(body),
   });

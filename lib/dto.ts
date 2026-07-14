@@ -95,10 +95,14 @@ export type CreateProjectResponse = {
   };
 };
 
-export type Project = {
-  id: string;
-  name: string;
-  description: string;
-  deadline: string;
-  status: string;
+export type GetProjectResponse = {
+  data: {
+    project: {
+      id: string;
+      name: string;
+      description: string;
+      deadline: string;
+      status: string;
+    };
+  };
 };
