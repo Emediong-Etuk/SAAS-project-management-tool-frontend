@@ -227,10 +227,13 @@ export const updateProject = (
   });
 
 export const deleteProject = (tenantId: string, projectId: string) =>
-  request(`/${tenantId}/projects/${projectId}`, { method: "DELETE" });
+  request(`/${tenantId}/projects/${projectId}/delete`, { method: "DELETE" });
 
-export const inviteMember = (tenantId: string, projectId: string) =>
-  request(`/${tenantId}/projects/${projectId}/add`, { method: "POST" });
+export const inviteMember = (tenantId: string, receiver_email: string) =>
+  request(`/tenants/${tenantId}/invite`, {
+    method: "POST",
+    body: JSON.stringify({ receiver_email }),
+  });
 
 export const assignRole = (
   tenantId: string,

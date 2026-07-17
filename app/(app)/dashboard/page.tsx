@@ -56,7 +56,6 @@ export default function Dashboard() {
           }
         : prev,
     );
-    // console.log("Updated logo URL:", newLogoUrl);
   };
 
   console.log("logo url in database:", dashboard.tenant.company_logo);
@@ -120,6 +119,12 @@ export default function Dashboard() {
     router.push(`/${session?.tenantId}/projects/getProjects`);
   };
 
+  const inviteMember = async () => {
+    router.push(
+      `/${session?.tenantId}/projects/${session?.projectId}/inviteMember`,
+    );
+  };
+
   return (
     <div>
       <h1>{dashboard.tenant.name}</h1>
@@ -153,6 +158,7 @@ export default function Dashboard() {
       <button onClick={sendInvite}>Invite member</button>
       <UploadCompanyLogo onUploadSuccess={handleLogoUpdate} />
       <button onClick={getProjects}>View Projects</button>
+      <button onClick={inviteMember}>InviteMember</button>
     </div>
   );
 }

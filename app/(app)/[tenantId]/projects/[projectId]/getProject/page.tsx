@@ -56,6 +56,10 @@ export default function ProjectPage() {
     router.push(`/${tenantId}/projects/${projectId}/updateProject`);
   };
 
+  const deleteProject = () => {
+    router.push(`/${tenantId}/projects/${projectId}/deleteProject`);
+  };
+
   return (
     <div>
       {loading && <p>Loading...</p>}
@@ -66,6 +70,7 @@ export default function ProjectPage() {
           <p>Description:{project[0].description}</p>
           <p>Status:{project[0].status}</p>
           <button onClick={updateProject}>Update Project</button>
+          <button onClick={deleteProject}>Delete Project</button>
         </div>
       )}
     </div>

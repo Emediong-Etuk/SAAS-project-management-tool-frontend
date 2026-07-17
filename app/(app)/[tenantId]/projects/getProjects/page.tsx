@@ -2,9 +2,8 @@
 
 import { getProjects } from "@/lib/api";
 import { getSession, type Session } from "@/lib/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 export default function GetProjects() {
   const [loading, setLoading] = useState(true);
@@ -19,29 +18,64 @@ export default function GetProjects() {
   >([]);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-
-  const [session] = useState<Session>(() => {
-    try {
-      return getSession();
-    } catch {
-      return null;
-    }
-  });
+  const [session, setSession] = useState<Session>(null);
 
   useEffect(() => {
-    if (!session?.tenantId) return;
+    if (typeof window === "undefined") return;
 
-    getProjects(session?.tenantId)
-      .then((response) => setProjects(response.data.projects))
-      .catch((err) => setError(err?.message ?? "Failed to get projects"))
-      .finally(() => setLoading(false));
-  }, [router, session]);
+    const nextSession = getSession();
+    const frame = window.requestAnimationFrame(() => {
+      setSession(nextSession);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  useEffect(() => {
+    if (!session?.tenantId) {
+      const frame = window.requestAnimationFrame(() => {
+        setProjects([]);
+        setError(null);
+        setLoading(false);
+      });
+
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    let cancelled = false;
+
+    const frame = window.requestAnimationFrame(() => {
+      if (cancelled) return;
+      setLoading(true);
+      setError(null);
+    });
+
+    getProjects(session.tenantId)
+      .then((response) => {
+        if (!cancelled) {
+          setProjects(response.data.projects);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err?.message ?? "Failed to get projects");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+      window.cancelAnimationFrame(frame);
+    };
+  }, [session?.tenantId]);
 
   if (!session?.tenantId) {
     return null;
   }
-
-  if (loading) return <p>Loading...</p>;
 
   const createProject = () => {
     return router.push(`/${session?.tenantId}/projects/new`);
@@ -56,6 +90,7 @@ export default function GetProjects() {
   return (
     <div>
       {error && <p>Error: {error}</p>}
+      {loading && <p>Loading projects...</p>}
       <ul>
         {projects.map((project) => (
           <li key={project.id}>
