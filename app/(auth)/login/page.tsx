@@ -30,9 +30,14 @@ export default function LoginPage() {
       const response = await login({ email, password });
       saveSession(
         response.data.token,
-        response.data.tenantId,
+        response.data.user.tenant.id,
         response.data.user,
       );
+
+      console.log({
+        response: response,
+      });
+
       document.cookie = `token=${response.data.token}; path=/; max-age=86400;`;
       router.push("/dashboard");
     } catch (err: unknown) {

@@ -38,7 +38,10 @@ export default function Dashboard() {
     }
 
     getTenantDashboard()
-      .then((response) => setDashboard(response.data))
+      .then((response) => {
+        setDashboard(response.data);
+        console.log(response.data.tenantUsers);
+      })
       .catch((err) => setError(err?.message ?? "Failed to get dashboard"))
       .finally(() => setLoading(false));
   }, [router, session]);
@@ -58,7 +61,7 @@ export default function Dashboard() {
     );
   };
 
-  console.log("logo url in database:", dashboard.tenant.company_logo);
+  // console.log("logo url in database:", dashboard.tenant.company_logo);
 
   const updateTenant = () => {
     const tenantId = session?.tenantId;
@@ -90,22 +93,24 @@ export default function Dashboard() {
     router.push(`/${tenantId}/sendInvite`);
   };
 
-  function RemoveMember(name: string) {
+  function RemoveMember(user: string | { name: string; username: string }) {
     const session = getSession();
     if (!session) {
-      return;
+      return null;
     }
     const tenantId = session.tenantId;
 
     if (!tenantId) {
-      return;
+      return null;
     }
+
+    const memberName = typeof user === "string" ? user : user.name;
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
 
       try {
-        const response = await removeMember(tenantId, name);
+        const response = await removeMember(tenantId, memberName);
         alert(response.message);
       } catch (error) {
         alert(error instanceof Error ? error.message : "");
@@ -148,11 +153,18 @@ export default function Dashboard() {
         />
       ) : null}
 
-      {dashboard.tenantUsers.map((user) => (
-        <div key={user}>
-          {user} {RemoveMember(user)}
-        </div>
-      ))}
+      <ul>
+        {dashboard.tenantUsers.map((user, index) => (
+          <li key={index}>
+            {typeof user === "string"
+              ? user
+              : JSON.stringify(
+                  "Name:" + user.name + " " + "," + "Username:" + user.username,
+                )}
+          </li>
+        ))}
+      </ul>
+
       <button onClick={updateTenant}>Update</button>
       <p onClick={handleDelete}>Delete</p>
       <button onClick={sendInvite}>Invite member</button>

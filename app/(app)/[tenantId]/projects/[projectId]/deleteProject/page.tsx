@@ -1,31 +1,14 @@
 "use client";
 
 import { deleteProject } from "@/lib/api";
-import { useEffect, useState } from "react";
-import { getSession, type Session } from "@/lib/auth";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 
 export default function DeleteProject() {
-  const [session, setSession] = useState<Session | null>(null);
   const router = useRouter();
+  const params = useParams<{ tenantId: string; projectId: string }>();
 
-  useEffect(() => {
-    const syncSession = () => {
-      setSession(getSession());
-    };
-
-    syncSession();
-    window.addEventListener("storage", syncSession);
-
-    return () => window.removeEventListener("storage", syncSession);
-  }, []);
-
-  const tenantId = session?.tenantId;
-  const projectId = session?.projectId;
-
-  if (!tenantId || !projectId) {
-    return null;
-  }
+  const tenantId = params.tenantId;
+  const projectId = params.projectId;
 
   const handleDelete = async () => {
     try {

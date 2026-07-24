@@ -17,6 +17,7 @@ export default function ResetPassword() {
       setLoading(true);
       const request = await resetPassword({ email, password, token });
       setResponse(request.message);
+      console.log(request.message);
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "");

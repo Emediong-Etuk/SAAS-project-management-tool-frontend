@@ -81,9 +81,9 @@ export default function GetProjects() {
     return router.push(`/${session?.tenantId}/projects/new`);
   };
 
-  const handleProjectClick = () => {
+  const handleProjectClick = (projectid: string) => {
     return router.push(
-      `/${session?.tenantId}/projects/${session?.projectId}/getProject`,
+      `/${session?.tenantId}/projects/${projectid}/getProject`,
     );
   };
 
@@ -96,13 +96,16 @@ export default function GetProjects() {
           <li key={project.id}>
             <strong>{project.name}</strong>: {project.description} (Created at:{" "}
             {project.created_at}){project.status}
+            <button
+              type="button"
+              onClick={() => handleProjectClick(project.id)}
+            >
+              View Project
+            </button>
           </li>
         ))}
-        <button type="button" onClick={handleProjectClick}>
-          View Project
-        </button>
       </ul>
-      <button type="button" onClick={createProject}>
+      <button type="button" onClick={() => createProject()}>
         Create Project
       </button>
     </div>

@@ -12,6 +12,8 @@ import {
   GetProjectsResponse,
   CreateProjectResponse,
   GetProjectResponse,
+  CreateMeetingResponse,
+  GetMeetingResponse,
 } from "./dto";
 import { LoginResponse } from "./dto";
 
@@ -238,29 +240,47 @@ export const inviteMember = (tenantId: string, receiver_email: string) =>
 export const assignRole = (
   tenantId: string,
   projectId: string,
-  memberId: string,
-  role: string,
+  username: string,
 ) =>
-  request(`/${tenantId}/projects/${projectId}/${memberId}/assign-role`, {
+  request(`/${tenantId}/projects/${projectId}/assign-role`, {
     method: "POST",
-    body: JSON.stringify({ role }),
+    body: JSON.stringify({ username }),
   });
 
 export const createMeeting = (tenantId: string, projectId: string) =>
-  request(`/${tenantId}/projects/${projectId}/create-meeting`, {
-    method: "POST",
-  });
+  request<CreateMeetingResponse>(
+    `/${tenantId}/projects/${projectId}/create-meeting`,
+    {
+      method: "POST",
+    },
+  );
 
 export const createAttendee = (tenantId: string, projectId: string) =>
   request(`/${tenantId}/projects/${projectId}/join-meeting`, {
     method: "POST",
   });
 
-export const getMeeting = (tenantId: string, projectId: string) =>
-  request(`/${tenantId}/projects/${projectId}/get-meeting`);
+export const getMeeting = (
+  tenantId: string,
+  projectId: string,
+  meetingId?: string,
+) =>
+  request<GetMeetingResponse>(
+    `/${tenantId}/projects/${projectId}/get-meeting${
+      meetingId ? `?meeting_id=${encodeURIComponent(meetingId)}` : ""
+    }`,
+  );
 
-export const getAttendee = (tenantId: string, projectId: string) =>
-  request(`/${tenantId}/projects/${projectId}/get-attendee`);
+export const getAttendee = (
+  tenantId: string,
+  projectId: string,
+  meetingId?: string,
+) =>
+  request(
+    `/${tenantId}/projects/${projectId}/get-attendee${
+      meetingId ? `?meeting_id=${encodeURIComponent(meetingId)}` : ""
+    }`,
+  );
 
 export const deleteAttendee = (tenantId: string, projectId: string) =>
   request(`/${tenantId}/projects/${projectId}/delete-attendee`, {
@@ -276,8 +296,16 @@ export const deleteMeeting = (
     method: "DELETE",
   });
 
-export const getListAttendees = (tenantId: string, projectId: string) =>
-  request(`/${tenantId}/projects/${projectId}/list-attendee`);
+export const getListAttendees = (
+  tenantId: string,
+  projectId: string,
+  meetingId?: string,
+) =>
+  request(
+    `/${tenantId}/projects/${projectId}/list-attendee${
+      meetingId ? `?meeting_id=${encodeURIComponent(meetingId)}` : ""
+    }`,
+  );
 
 export const updateProjectStatus = (
   tenantId: string,

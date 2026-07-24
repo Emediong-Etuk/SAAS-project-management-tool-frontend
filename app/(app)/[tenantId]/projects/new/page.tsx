@@ -81,12 +81,6 @@ export default function CreateProject() {
       });
       const projectId = response.data.project.id;
       router.push(`/${tenantId}/projects/getProjects`);
-      saveSession(
-        sessionState.session.token || "",
-        tenantId,
-        projectId,
-        sessionState.session.user || {},
-      );
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred",

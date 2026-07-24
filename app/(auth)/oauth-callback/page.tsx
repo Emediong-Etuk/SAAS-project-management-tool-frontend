@@ -13,6 +13,10 @@ export default function AuthCallback() {
     const tenantId = searchParams.get("tenant_id");
     const user = searchParams.get("user");
 
+    console.log({
+      user: user,
+    });
+
     if (!token) {
       router.push("/login");
       return;
@@ -28,9 +32,6 @@ export default function AuthCallback() {
     saveSession(token, tenantId ?? "", parsedUser);
     document.cookie = `token=${token}; path=/; max-age=86400;`;
 
-    if (!tenantId) {
-      router.push("/create-tenant");
-    }
     router.push("/dashboard");
   }, [router, searchParams]);
 

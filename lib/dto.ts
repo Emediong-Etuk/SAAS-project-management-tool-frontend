@@ -11,8 +11,15 @@ export type VerifyEmailResponse = {
 export type LoginResponse = {
   data: {
     token: string;
-    tenantId: string;
-    user: object;
+    user: {
+      id: string;
+      tenant: {
+        id: string;
+      };
+      project: {
+        id: string;
+      };
+    };
   };
 };
 
@@ -53,7 +60,7 @@ export type GetDashboardResponse = {
       company_logo: string | null;
     };
     currentSubscriptionPlan: string;
-    tenantUsers: Array<string>;
+    tenantUsers: Array<{ name: string; username: string }>;
   };
 };
 
@@ -104,5 +111,33 @@ export type GetProjectResponse = {
       deadline: string;
       status: string;
     };
+  };
+};
+
+export type CreateMeetingResponse = {
+  data: {
+    meeting?: {
+      id: string;
+      [key: string]: unknown;
+    };
+    meeting_id?: string;
+    id?: string;
+    [key: string]: unknown;
+  };
+};
+
+export type GetMeetingResponse = {
+  data: {
+    meeting?: {
+      id: string;
+      title?: string;
+      status?: string;
+      created_at?: string;
+      updated_at?: string;
+      [key: string]: unknown;
+    };
+    meeting_id?: string;
+    id?: string;
+    [key: string]: unknown;
   };
 };

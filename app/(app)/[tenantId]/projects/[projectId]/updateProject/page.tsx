@@ -1,9 +1,8 @@
 "use client";
 
 import { updateProject } from "@/lib/api";
-import { useEffect, useState } from "react";
-import { getSession, type Session } from "@/lib/auth";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function UpdateProject() {
   const [name, setName] = useState("");
@@ -11,26 +10,11 @@ export default function UpdateProject() {
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>("");
-  const [session, setSession] = useState<Session | null>(null);
   const router = useRouter();
+  const params = useParams<{ tenantId: string; projectId: string }>();
 
-  useEffect(() => {
-    const syncSession = () => {
-      setSession(getSession());
-    };
-
-    syncSession();
-    window.addEventListener("storage", syncSession);
-
-    return () => window.removeEventListener("storage", syncSession);
-  }, []);
-
-  const tenantId = session?.tenantId;
-  const projectId = session?.projectId;
-
-  if (!tenantId || !projectId) {
-    return <p>Loading session...</p>;
-  }
+  const tenantId = params.tenantId;
+  const projectId = params.projectId;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

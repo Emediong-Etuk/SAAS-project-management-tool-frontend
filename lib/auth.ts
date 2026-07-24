@@ -3,20 +3,13 @@ import type { User } from "@/types";
 export type Session = {
   token: string | null;
   tenantId: string | null;
-  projectId: string | null;
   user: User | null;
 } | null;
 
-export function saveSession(
-  token: string,
-  tenantId: string,
-  projectId: string,
-  user: object,
-) {
+export function saveSession(token: string, tenantId: string, user: object) {
   localStorage.setItem("token", token);
   localStorage.setItem("tenantId", tenantId);
   localStorage.setItem("user", JSON.stringify(user));
-  localStorage.setItem("projectId", projectId);
 }
 
 export function getSession() {
@@ -26,7 +19,6 @@ export function getSession() {
 
   const token = localStorage.getItem("token");
   const tenantId = localStorage.getItem("tenantId");
-  const projectId = localStorage.getItem("projectId");
   const userRaw = localStorage.getItem("user");
   let user = null;
   try {
@@ -38,7 +30,6 @@ export function getSession() {
   return {
     token,
     tenantId,
-    projectId,
     user,
   };
 }
@@ -47,5 +38,4 @@ export function clearSession() {
   localStorage.removeItem("token");
   localStorage.removeItem("tenantId");
   localStorage.removeItem("user");
-  localStorage.removeItem("projectId");
 }
